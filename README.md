@@ -48,7 +48,7 @@ dependencies:
 
 ```dart
 void getData()async{
-  List<VideoData> results = Extractor().getDirectLink(link: 'https://www.youtube.com/watch?v=Ne7y9_AbBsY');
+  VideoData results = Extractor().getDirectLink(link: 'https://www.youtube.com/watch?v=Ne7y9_AbBsY');
 }
 ```
 
