@@ -13,7 +13,7 @@ class Extractor {
   ///Many websites take more time to load, so direct url extraction will also take time.
   ///Minimum 6 seconds of timeout is recommended and default timeout is also set to 6 seconds
   ///
-  Future<VideoData?> getDirectLink({String link = '', int timeout = 6}) async {
+ static Future<VideoData?> getDirectLink({String link = '', int timeout = 6}) async {
     VideoData? res;
 
     HeadlessInAppWebView(
