@@ -7,8 +7,11 @@
 <p>Extract direct video links from video websites like youtube, vimeo and many more.</p>
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/ashishpipaliya/extractor?style=for-the-badge)
-![GitHub](https://img.shields.io/github/license/ashishpipaliya/extractor?style=flat-square)
+![GitHub](https://img.shields.io/github/license/ashishpipaliya/extractor?style=for-the-badge)
 
+<br/>
+<img src="https://user-images.githubusercontent.com/32923529/167307269-187aaa44-0627-4370-8aff-fbc70cbe3204.gif" width="250"/>
+<br/>
 </div>
 
 ## 🌈 Supported Websites
