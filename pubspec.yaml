@@ -1,6 +1,6 @@
 name: extractor
 description: Create direct video links from various websites like youtube, vimeo and many more
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/ashishpipaliya/extractor
 
 environment:
