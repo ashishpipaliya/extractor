@@ -1,4 +1,3 @@
-import 'package:example/video_viewer.dart';
 import 'package:extractor/extractor.dart';
 import 'package:flutter/material.dart';
 
@@ -65,10 +64,6 @@ class _HomePageState extends State<HomePage> {
               shrinkWrap: true,
               children: data?.links
                   ?.map((e) => ListTile(
-                onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            VideoViewer(url: e.href ?? ''))),
                 leading: CircleAvatar(
                   child: Text(e.videoFormat ?? 'N/A'),
                 ),
