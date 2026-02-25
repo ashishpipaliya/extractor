@@ -12,14 +12,37 @@ A robust, production-ready Flutter plugin for downloading videos and audio from 
 | Android  | ✅ Fully Supported | [youtubedl-android v0.18.1](https://github.com/yausername/youtubedl-android) | ✅ Yes |
 | iOS      | ⚠️ Experimental | [YoutubeDL-iOS v0.0.2](https://github.com/kewlbear/YoutubeDL-iOS) | ❌ **NO** |
 
+## 📱 Screenshots (example app)
+
+<table>
+  <tr>
+    <td><img src="screenshots/main_screen.png" width="200" alt="Main Screen - Quality Selection"/></td>
+    <td><img src="screenshots/downloading.png" width="200" alt="Download in Progress"/></td>
+    <td><img src="screenshots/downloads.png" width="200" alt="Downloads Page"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Quality Selection</b><br/>Browse and select video quality</td>
+    <td align="center"><b>Download Progress</b><br/>Real-time progress with logs</td>
+    <td align="center"><b>Downloads Manager</b><br/>View completed downloads</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/settings_version.png" width="200" alt="Settings - Version Info"/></td>
+    <td><img src="screenshots/settings_features.png" width="200" alt="Settings - Features"/></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Version Information</b><br/>Check library versions</td>
+    <td align="center"><b>Features List</b><br/>All plugin capabilities</td>
+    <td></td>
+  </tr>
+</table>
+
 ### iOS Warning
 
 **IMPORTANT**: iOS implementation uses YoutubeDL-iOS which is **NOT AppStore-safe**. Apps using this plugin will likely be **rejected from the App Store**. Use only for:
 - Internal/enterprise apps
 - Development/testing  
 - Apps distributed outside the App Store (TestFlight, Ad-Hoc, Enterprise)
-
-For production iOS apps, consider server-side video processing. See [IOS_ROADMAP.md](IOS_ROADMAP.md) for details.
 
 ## ✨ Features
 
@@ -640,8 +663,6 @@ This plugin uses open-source libraries including youtubedl-android (GPL-3.0). Se
 
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) - The amazing video downloader
 - [youtubedl-android](https://github.com/yausername/youtubedl-android) - Android port
-- [YoutubeDL-iOS](https://github.com/kewlbear/YoutubeDL-iOS) - iOS port
-- [Seal](https://github.com/JunkFood02/Seal) - Design inspiration
 - [Pigeon](https://pub.dev/packages/pigeon) - Type-safe native communication
 
 ## 📚 Documentation
@@ -649,8 +670,6 @@ This plugin uses open-source libraries including youtubedl-android (GPL-3.0). Se
 - [README.md](README.md) - Complete guide with features, installation, usage, and API reference
 - [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [IOS_ROADMAP.md](IOS_ROADMAP.md) - iOS implementation details and limitations
-- [IOS_IMPLEMENTATION.md](IOS_IMPLEMENTATION.md) - iOS architecture and technical details
 
 ## 🔗 Links
 
