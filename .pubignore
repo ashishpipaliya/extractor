@@ -1,0 +1,27 @@
+# Exclude iOS implementation (will be added in future release)
+ios/
+example/ios/
+
+# Exclude iOS documentation (will be added with iOS support)
+IOS_ROADMAP.md
+IOS_IMPLEMENTATION.md
+
+# Exclude build artifacts
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Exclude IDE files
+.idea/
+.vscode/
+*.iml
+
+# Exclude macOS files
+.DS_Store
+example/macos/
+
+# Exclude other platforms from example
+example/web/
+example/windows/
+example/linux/

@@ -1,0 +1,58 @@
+group = "com.ashishpipaliya.extractor"
+version = "1.0-SNAPSHOT"
+
+buildscript {
+    ext.kotlin_version = "2.2.20"
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.11.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    namespace = "com.ashishpipaliya.extractor"
+
+    compileSdk = 34
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+
+    defaultConfig {
+        minSdk = 24
+    }
+
+    dependencies {
+        implementation 'io.github.junkfood02.youtubedl-android:library:0.18.1'
+        implementation 'io.github.junkfood02.youtubedl-android:ffmpeg:0.18.1'
+        implementation 'io.github.junkfood02.youtubedl-android:aria2c:0.18.1'
+        
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
+    }
+}
