@@ -35,17 +35,17 @@ class _ExamplePageState extends State<ExamplePage> {
   final _urlController = TextEditingController(
     text: 'https://youtu.be/YY2w2JEX2xk?si=YwYTvluKwlqqs-2U',
   );
-  
+
   int _currentIndex = 0;
   String _status = 'Not initialized';
   String _logs = '';
   VideoInfo? _videoInfo;
   List<VideoFormat> _availableQualities = [];
   VideoFormat? _selectedQuality;
-  
+
   // Downloads tracking
   final Map<String, DownloadItem> _downloads = {};
-  
+
   // Version info
   VersionInfo? _versionInfo;
   bool _isUpdating = false;
@@ -59,24 +59,24 @@ class _ExamplePageState extends State<ExamplePage> {
 
   Future<void> _initializePlugin() async {
     setState(() => _status = 'Initializing...');
-    
+
     final result = await _youtubeDL.initialize(
       enableFFmpeg: true,
       enableAria2c: true,
     );
-    
+
     setState(() {
-      _status = result.success 
-          ? 'Initialized successfully' 
+      _status = result.success
+          ? 'Initialized successfully'
           : 'Failed: ${result.errorMessage}';
     });
-    
+
     _addLog('✓ Plugin initialized');
-    
+
     // Load version info
     _loadVersionInfo();
   }
-  
+
   Future<void> _loadVersionInfo() async {
     try {
       final version = await _youtubeDL.getVersion();
@@ -87,26 +87,26 @@ class _ExamplePageState extends State<ExamplePage> {
       _addLog('✗ Failed to load version: $e');
     }
   }
-  
+
   Future<void> _updateYoutubeDL() async {
     setState(() {
       _isUpdating = true;
       _status = 'Updating yt-dlp...';
     });
     _addLog('→ Updating yt-dlp...');
-    
+
     try {
       final result = await _youtubeDL.updateYoutubeDL(
         channel: UpdateChannel.stable,
       );
-      
+
       setState(() {
         _isUpdating = false;
         _status = result.status == OperationStatus.success
             ? 'Update complete'
             : 'Update failed';
       });
-      
+
       if (result.status == OperationStatus.success) {
         _addLog('✓ Updated to: ${result.version}');
         // Reload version info
@@ -134,7 +134,7 @@ class _ExamplePageState extends State<ExamplePage> {
         _status = 'Downloading: ${progress.progress.toStringAsFixed(1)}%';
       });
     });
-    
+
     // State changes
     _youtubeDL.onStateChanged.listen((state) {
       setState(() {
@@ -144,7 +144,7 @@ class _ExamplePageState extends State<ExamplePage> {
       });
       _addLog('State: ${state.state.name}');
     });
-    
+
     // Errors
     _youtubeDL.onError.listen((error) {
       setState(() {
@@ -155,7 +155,7 @@ class _ExamplePageState extends State<ExamplePage> {
       });
       _addLog('ERROR: ${error.error}');
     });
-    
+
     // Logs
     _youtubeDL.onLog.listen((log) {
       _addLog('[${log.level.name}] ${log.message}');
@@ -170,33 +170,35 @@ class _ExamplePageState extends State<ExamplePage> {
       _selectedQuality = null;
     });
     _addLog('→ Getting video info...');
-    
+
     try {
       final info = await _youtubeDL.getVideoInfo(_urlController.text);
-      
+
       // Extract unique video qualities (with video codec)
       final videoFormats = info.formats
-          ?.where((f) => f?.vcodec != null && f?.vcodec != 'none')
-          .whereType<VideoFormat>()
-          .toList() ?? [];
-      
+              ?.where((f) => f?.vcodec != null && f?.vcodec != 'none')
+              .whereType<VideoFormat>()
+              .toList() ??
+          [];
+
       // Sort by height (quality)
       videoFormats.sort((a, b) => (b.height ?? 0).compareTo(a.height ?? 0));
-      
+
       // Remove duplicates by height
       final uniqueQualities = <int, VideoFormat>{};
       for (var format in videoFormats) {
-        if (format.height != null && !uniqueQualities.containsKey(format.height)) {
+        if (format.height != null &&
+            !uniqueQualities.containsKey(format.height)) {
           uniqueQualities[format.height!] = format;
         }
       }
-      
+
       setState(() {
         _videoInfo = info;
         _availableQualities = uniqueQualities.values.toList();
         _status = 'Found ${_availableQualities.length} qualities';
       });
-      
+
       _addLog('✓ Title: ${info.title}');
       _addLog('  Duration: ${info.duration}s');
       _addLog('  Qualities: ${_availableQualities.length}');
@@ -212,10 +214,10 @@ class _ExamplePageState extends State<ExamplePage> {
       _addLog('✗ Please fetch video info first');
       return;
     }
-    
+
     final dir = await getApplicationDocumentsDirectory();
     final processId = 'download_${DateTime.now().millisecondsSinceEpoch}';
-    
+
     // Use format that merges best video and audio
     final request = DownloadRequest(
       url: _urlController.text,
@@ -226,7 +228,7 @@ class _ExamplePageState extends State<ExamplePage> {
       embedMetadata: true,
       processId: processId,
     );
-    
+
     setState(() {
       _downloads[processId] = DownloadItem(
         title: _videoInfo!.title ?? 'Unknown',
@@ -235,18 +237,18 @@ class _ExamplePageState extends State<ExamplePage> {
       );
       _status = 'Downloading highest quality...';
     });
-    
+
     _addLog('→ Downloading highest quality (merging video+audio)...');
-    
+
     try {
       final result = await _youtubeDL.download(request);
-      
+
       setState(() {
         _downloads[processId]!.state = 'completed';
         _downloads[processId]!.outputPath = result.outputPath;
         _status = 'Download complete!';
       });
-      
+
       _addLog('✓ Saved to: ${result.outputPath}');
     } catch (e) {
       setState(() {
@@ -264,18 +266,18 @@ class _ExamplePageState extends State<ExamplePage> {
       _addLog('✗ Please select a quality first');
       return;
     }
-    
+
     final dir = await getApplicationDocumentsDirectory();
     final processId = 'download_${DateTime.now().millisecondsSinceEpoch}';
-    
+
     // Get best audio to merge with selected video quality
     final audioFormat = FormatHelper.getBestAudio(_videoInfo?.formats);
-    
+
     // Build format string to merge video + audio
     final format = audioFormat != null
         ? '${_selectedQuality!.formatId}+${audioFormat.formatId}/best'
         : _selectedQuality!.formatId!;
-    
+
     final request = DownloadRequest(
       url: _urlController.text,
       outputPath: dir.path,
@@ -285,9 +287,9 @@ class _ExamplePageState extends State<ExamplePage> {
       embedMetadata: true,
       processId: processId,
     );
-    
+
     final qualityLabel = '${_selectedQuality!.height}p';
-    
+
     setState(() {
       _downloads[processId] = DownloadItem(
         title: _videoInfo!.title ?? 'Unknown',
@@ -296,18 +298,18 @@ class _ExamplePageState extends State<ExamplePage> {
       );
       _status = 'Downloading $qualityLabel...';
     });
-    
+
     _addLog('→ Downloading $qualityLabel...');
-    
+
     try {
       final result = await _youtubeDL.download(request);
-      
+
       setState(() {
         _downloads[processId]!.state = 'completed';
         _downloads[processId]!.outputPath = result.outputPath;
         _status = 'Download complete!';
       });
-      
+
       _addLog('✓ Saved to: ${result.outputPath}');
     } catch (e) {
       setState(() {
@@ -325,10 +327,10 @@ class _ExamplePageState extends State<ExamplePage> {
       _addLog('✗ Please fetch video info first');
       return;
     }
-    
+
     final dir = await getApplicationDocumentsDirectory();
     final processId = 'download_${DateTime.now().millisecondsSinceEpoch}';
-    
+
     final request = DownloadRequest(
       url: _urlController.text,
       outputPath: dir.path,
@@ -339,7 +341,7 @@ class _ExamplePageState extends State<ExamplePage> {
       embedThumbnail: true,
       processId: processId,
     );
-    
+
     setState(() {
       _downloads[processId] = DownloadItem(
         title: _videoInfo!.title ?? 'Unknown',
@@ -348,18 +350,18 @@ class _ExamplePageState extends State<ExamplePage> {
       );
       _status = 'Extracting audio...';
     });
-    
+
     _addLog('→ Extracting audio (MP3)...');
-    
+
     try {
       final result = await _youtubeDL.download(request);
-      
+
       setState(() {
         _downloads[processId]!.state = 'completed';
         _downloads[processId]!.outputPath = result.outputPath;
         _status = 'Audio extracted!';
       });
-      
+
       _addLog('✓ Saved to: ${result.outputPath}');
     } catch (e) {
       setState(() {
@@ -400,7 +402,7 @@ class _ExamplePageState extends State<ExamplePage> {
         _addLog('✗ Failed to delete: $e');
       }
     }
-    
+
     setState(() {
       _downloads.remove(processId);
     });
@@ -438,7 +440,7 @@ class _ExamplePageState extends State<ExamplePage> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
-          
+
           // Content
           Expanded(
             child: IndexedStack(
@@ -491,7 +493,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Get Info Button
           FilledButton.icon(
             onPressed: _getVideoInfo,
@@ -499,7 +501,7 @@ class _ExamplePageState extends State<ExamplePage> {
             label: const Text('Get Video Info & Qualities'),
           ),
           const SizedBox(height: 16),
-          
+
           // Video Info
           if (_videoInfo != null) ...[
             Card(
@@ -521,7 +523,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
             const SizedBox(height: 16),
           ],
-          
+
           // Available Qualities
           if (_availableQualities.isNotEmpty) ...[
             Text(
@@ -529,25 +531,25 @@ class _ExamplePageState extends State<ExamplePage> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
-            
+
             ...List.generate(_availableQualities.length, (index) {
               final quality = _availableQualities[index];
               final isSelected = _selectedQuality == quality;
-              
+
               // Build subtitle with available info
               final parts = <String>[];
-              
+
               // Add extension
               if (quality.ext != null) {
                 parts.add(quality.ext!.toUpperCase());
               }
-              
+
               // Add codec (simplified, e.g., "avc1.64001F" -> "AVC1")
               if (quality.vcodec != null && quality.vcodec != 'none') {
                 final codec = quality.vcodec!.split('.').first.toUpperCase();
                 parts.add(codec);
               }
-              
+
               // Add file size or bitrate
               if (quality.filesize != null && quality.filesize! > 0) {
                 final size = FormatHelper.formatFileSize(quality.filesize);
@@ -555,14 +557,15 @@ class _ExamplePageState extends State<ExamplePage> {
               } else if (quality.tbr != null && quality.tbr! > 0) {
                 parts.add('${quality.tbr!.toInt()} kbps');
               }
-              
+
               // Add FPS if available
               if (quality.fps != null && quality.fps! > 0) {
                 parts.add('${quality.fps!.toInt()} fps');
               }
-              
-              final subtitle = parts.isNotEmpty ? parts.join(' • ') : 'Video format';
-              
+
+              final subtitle =
+                  parts.isNotEmpty ? parts.join(' • ') : 'Video format';
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: OutlinedButton(
@@ -570,12 +573,12 @@ class _ExamplePageState extends State<ExamplePage> {
                     setState(() => _selectedQuality = quality);
                   },
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: isSelected 
-                        ? Theme.of(context).colorScheme.primaryContainer 
+                    backgroundColor: isSelected
+                        ? Theme.of(context).colorScheme.primaryContainer
                         : null,
                     side: BorderSide(
-                      color: isSelected 
-                          ? Theme.of(context).colorScheme.primary 
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
                           : Colors.grey,
                       width: isSelected ? 2 : 1,
                     ),
@@ -586,8 +589,8 @@ class _ExamplePageState extends State<ExamplePage> {
                       children: [
                         Icon(
                           isSelected ? Icons.check_circle : Icons.video_library,
-                          color: isSelected 
-                              ? Theme.of(context).colorScheme.primary 
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
                               : null,
                         ),
                         const SizedBox(width: 12),
@@ -619,7 +622,7 @@ class _ExamplePageState extends State<ExamplePage> {
               );
             }),
             const SizedBox(height: 16),
-            
+
             // Download Buttons
             FilledButton.icon(
               onPressed: _downloadHighestQuality,
@@ -627,18 +630,19 @@ class _ExamplePageState extends State<ExamplePage> {
               label: const Text('Download Highest Quality (Merged)'),
             ),
             const SizedBox(height: 8),
-            
+
             FilledButton.icon(
-              onPressed: _selectedQuality != null ? _downloadSelectedQuality : null,
+              onPressed:
+                  _selectedQuality != null ? _downloadSelectedQuality : null,
               icon: const Icon(Icons.download),
               label: Text(
-                _selectedQuality != null 
-                    ? 'Download ${_selectedQuality!.height}p' 
+                _selectedQuality != null
+                    ? 'Download ${_selectedQuality!.height}p'
                     : 'Select Quality First',
               ),
             ),
             const SizedBox(height: 8),
-            
+
             OutlinedButton.icon(
               onPressed: _downloadAudioOnly,
               icon: const Icon(Icons.audiotrack),
@@ -646,7 +650,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
             const SizedBox(height: 24),
           ],
-          
+
           // Logs
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -663,7 +667,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           Container(
             height: 200,
             padding: const EdgeInsets.all(12),
@@ -720,14 +724,14 @@ class _ExamplePageState extends State<ExamplePage> {
         ),
       );
     }
-    
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: _downloads.length,
       itemBuilder: (context, index) {
         final processId = _downloads.keys.elementAt(index);
         final download = _downloads[processId]!;
-        
+
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           child: Padding(
@@ -778,7 +782,7 @@ class _ExamplePageState extends State<ExamplePage> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                
+
                 // Progress bar
                 if (download.state == 'started') ...[
                   LinearProgressIndicator(
@@ -799,7 +803,7 @@ class _ExamplePageState extends State<ExamplePage> {
                     ],
                   ),
                 ],
-                
+
                 // Status
                 if (download.state != 'started') ...[
                   Container(
@@ -808,7 +812,8 @@ class _ExamplePageState extends State<ExamplePage> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: _getStateColor(download.state).withValues(alpha: 0.1),
+                      color:
+                          _getStateColor(download.state).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: _getStateColor(download.state),
@@ -824,7 +829,7 @@ class _ExamplePageState extends State<ExamplePage> {
                     ),
                   ),
                 ],
-                
+
                 // Error message
                 if (download.error != null) ...[
                   const SizedBox(height: 8),
@@ -836,7 +841,7 @@ class _ExamplePageState extends State<ExamplePage> {
                     ),
                   ),
                 ],
-                
+
                 // Output path
                 if (download.outputPath != null) ...[
                   const SizedBox(height: 8),
@@ -913,7 +918,6 @@ class _ExamplePageState extends State<ExamplePage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
                   if (_versionInfo != null) ...[
                     _buildVersionItem(
                       'yt-dlp',
@@ -942,7 +946,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Update Section
           Card(
             child: Padding(
@@ -971,7 +975,6 @@ class _ExamplePageState extends State<ExamplePage> {
                         ),
                   ),
                   const SizedBox(height: 16),
-                  
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
@@ -983,7 +986,8 @@ class _ExamplePageState extends State<ExamplePage> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Icon(Icons.system_update),
-                      label: Text(_isUpdating ? 'Updating...' : 'Update yt-dlp'),
+                      label:
+                          Text(_isUpdating ? 'Updating...' : 'Update yt-dlp'),
                     ),
                   ),
                 ],
@@ -991,7 +995,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Plugin Information
           Card(
             child: Padding(
@@ -1013,7 +1017,6 @@ class _ExamplePageState extends State<ExamplePage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
                   _buildInfoRow('Plugin', 'Extractor v1.0.0'),
                   const SizedBox(height: 12),
                   _buildInfoRow('Android Library', 'youtubedl-android v0.18.1'),
@@ -1026,7 +1029,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Features
           Card(
             child: Padding(
@@ -1048,7 +1051,6 @@ class _ExamplePageState extends State<ExamplePage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
                   _buildFeatureItem('Video downloads', true),
                   _buildFeatureItem('Audio extraction (MP3)', true),
                   _buildFeatureItem('Quality selection', true),
@@ -1064,7 +1066,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Actions
           Card(
             child: Padding(
@@ -1086,7 +1088,6 @@ class _ExamplePageState extends State<ExamplePage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
@@ -1096,7 +1097,6 @@ class _ExamplePageState extends State<ExamplePage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
@@ -1111,7 +1111,6 @@ class _ExamplePageState extends State<ExamplePage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
@@ -1125,7 +1124,7 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Warning
           Container(
             padding: const EdgeInsets.all(16),

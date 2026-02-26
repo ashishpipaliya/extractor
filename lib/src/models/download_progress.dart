@@ -35,5 +35,6 @@ class DownloadProgress {
           etaInSeconds == other.etaInSeconds;
 
   @override
-  int get hashCode => processId.hashCode ^ progress.hashCode ^ etaInSeconds.hashCode;
+  int get hashCode =>
+      processId.hashCode ^ progress.hashCode ^ etaInSeconds.hashCode;
 }

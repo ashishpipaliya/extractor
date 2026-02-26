@@ -15,22 +15,24 @@ class YoutubeDLFlutter {
   final _CallbackHandler _callbackHandler = _CallbackHandler();
 
   /// Stream of download progress updates
-  Stream<DownloadProgress> get onProgress => _callbackHandler.progressController.stream;
+  Stream<DownloadProgress> get onProgress =>
+      _callbackHandler.progressController.stream;
 
   /// Stream of download state changes
-  Stream<DownloadState> get onStateChanged => _callbackHandler.stateController.stream;
+  Stream<DownloadState> get onStateChanged =>
+      _callbackHandler.stateController.stream;
 
   /// Stream of download errors
   Stream<DownloadError> get onError => _callbackHandler.errorController.stream;
-  
+
   /// Stream of log messages from yt-dlp, FFmpeg, and Python
   Stream<LogMessage> get onLog => _callbackHandler.logController.stream;
 
   /// Initialize the library
-  /// 
+  ///
   /// [enableFFmpeg] - Enable FFmpeg for audio extraction and conversion
   /// [enableAria2c] - Enable Aria2c for faster downloads
-  /// 
+  ///
   /// Returns [InitResult] with success status and optional error message
   Future<InitResult> initialize({
     bool enableFFmpeg = true,
@@ -38,12 +40,12 @@ class YoutubeDLFlutter {
   }) async {
     try {
       YoutubeDLCallback.setUp(_callbackHandler);
-      
+
       final config = InitConfig(
         enableFFmpeg: enableFFmpeg,
         enableAria2c: enableAria2c,
       );
-      
+
       return await _api.initialize(config);
     } catch (e) {
       return InitResult(
@@ -59,7 +61,7 @@ class YoutubeDLFlutter {
   }
 
   /// Update youtube-dl binary
-  /// 
+  ///
   /// [channel] - Update channel (stable or nightly)
   Future<UpdateResult> updateYoutubeDL({
     UpdateChannel channel = UpdateChannel.stable,
@@ -68,14 +70,14 @@ class YoutubeDLFlutter {
   }
 
   /// Get video information without downloading
-  /// 
+  ///
   /// [url] - Video URL
   Future<VideoInfo> getVideoInfo(String url) async {
     return await _api.getVideoInfo(url);
   }
 
   /// Get video information with custom options
-  /// 
+  ///
   /// [url] - Video URL
   /// [options] - Custom youtube-dl options (e.g., {'--format': 'best'})
   Future<VideoInfo> getVideoInfoWithOptions(
@@ -86,16 +88,16 @@ class YoutubeDLFlutter {
   }
 
   /// Download a video
-  /// 
+  ///
   /// Returns [DownloadResult] with status and output path
   Future<DownloadResult> download(DownloadRequest request) async {
     return await _api.download(request);
   }
 
   /// Cancel an active download
-  /// 
+  ///
   /// [processId] - Process ID of the download to cancel
-  /// 
+  ///
   /// Returns true if successfully cancelled
   Future<bool> cancelDownload(String processId) async {
     return await _api.cancelDownload(processId);
@@ -144,7 +146,7 @@ class _CallbackHandler extends YoutubeDLCallback {
       error: error,
     ));
   }
-  
+
   @override
   void onLog(String processId, String message, String level) {
     logController.add(LogMessage(
@@ -167,7 +169,7 @@ class _CallbackHandler extends YoutubeDLCallback {
         return DownloadStateType.unknown;
     }
   }
-  
+
   LogLevel _parseLogLevel(String level) {
     switch (level.toLowerCase()) {
       case 'info':
@@ -220,7 +222,8 @@ class LogMessage {
   });
 
   @override
-  String toString() => 'LogMessage(processId: $processId, level: $level, message: $message)';
+  String toString() =>
+      'LogMessage(processId: $processId, level: $level, message: $message)';
 }
 
 /// Log level enum

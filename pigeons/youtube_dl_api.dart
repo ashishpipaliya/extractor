@@ -247,7 +247,7 @@ abstract class YoutubeDLCallback {
 
   /// Called when an error occurs
   void onError(String processId, String error);
-  
+
   /// Called when a log message is generated
   void onLog(String processId, String message, String level);
 }
@@ -256,22 +256,22 @@ abstract class YoutubeDLCallback {
 enum DownloadTemplate {
   /// Best quality video with audio
   bestQuality,
-  
+
   /// Audio only (best quality)
   audioOnly,
-  
+
   /// Video only (no audio)
   videoOnly,
-  
+
   /// 1080p video with audio
   video1080p,
-  
+
   /// 720p video with audio
   video720p,
-  
+
   /// 480p video with audio
   video480p,
-  
+
   /// Best video under 100MB
   smallSize,
 }
@@ -280,13 +280,13 @@ enum DownloadTemplate {
 enum FormatSortOrder {
   /// Sort by quality (highest first)
   quality,
-  
+
   /// Sort by file size (smallest first)
   filesize,
-  
+
   /// Sort by bitrate (highest first)
   bitrate,
-  
+
   /// Sort by codec preference
   codec,
 }

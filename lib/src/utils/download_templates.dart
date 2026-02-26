@@ -7,22 +7,22 @@ class DownloadTemplates {
     switch (template) {
       case DownloadTemplate.bestQuality:
         return 'bestvideo+bestaudio/best';
-      
+
       case DownloadTemplate.audioOnly:
         return 'bestaudio/best';
-      
+
       case DownloadTemplate.videoOnly:
         return 'bestvideo';
-      
+
       case DownloadTemplate.video1080p:
         return 'bestvideo[height<=1080]+bestaudio/best[height<=1080]';
-      
+
       case DownloadTemplate.video720p:
         return 'bestvideo[height<=720]+bestaudio/best[height<=720]';
-      
+
       case DownloadTemplate.video480p:
         return 'bestvideo[height<=480]+bestaudio/best[height<=480]';
-      
+
       case DownloadTemplate.smallSize:
         return 'best[filesize<100M]';
     }
@@ -36,7 +36,7 @@ class DownloadTemplates {
           '--extract-audio': '',
           '--audio-format': 'mp3',
         };
-      
+
       default:
         return null;
     }
@@ -54,7 +54,7 @@ class DownloadTemplates {
   }) {
     final format = getFormatString(template);
     final customOptions = getCustomOptions(template);
-    
+
     return DownloadRequest(
       url: url,
       outputPath: outputPath,
