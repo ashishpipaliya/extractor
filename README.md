@@ -1,16 +1,16 @@
 # Extractor - Flutter Video Downloader Plugin
 
-A robust, production-ready Flutter plugin for downloading videos and audio from 1000+ websites using yt-dlp. Built with native Android (Kotlin) and iOS (Swift) implementations, featuring type-safe communication via Pigeon and following SOLID principles.
+A robust, production-ready Flutter plugin for downloading videos and audio from 1000+ websites using yt-dlp. Built with native Android (Kotlin) implementation.
 
-[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-blue.svg)](https://github.com/ashishpipaliya/extractor)
+[![Platform](https://img.shields.io/badge/Platform-Android-blue.svg)](https://github.com/ashishpipaliya/extractor)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## ⚠️ Platform Support
+## Platform Support
 
-| Platform | Status | Library | App Store Safe |
-|----------|--------|---------|----------------|
-| Android  | ✅ Fully Supported | [youtubedl-android v0.18.1](https://github.com/yausername/youtubedl-android) | ✅ Yes |
-| iOS      | ⚠️ Experimental | [YoutubeDL-iOS v0.0.2](https://github.com/kewlbear/YoutubeDL-iOS) | ❌ **NO** |
+| Platform | Status | Implementation |
+|----------|--------|----------------|
+| Android  | ✅ Fully Supported | Native Kotlin + youtubedl-android |
+| iOS | 💡 Open for Contributions | See [iOS Support](#-ios-support) below |
 
 ## 📱 Screenshots (example app)
 
@@ -36,13 +36,6 @@ A robust, production-ready Flutter plugin for downloading videos and audio from 
     <td></td>
   </tr>
 </table>
-
-### iOS Warning
-
-**IMPORTANT**: iOS implementation uses YoutubeDL-iOS which is **NOT AppStore-safe**. Apps using this plugin will likely be **rejected from the App Store**. Use only for:
-- Internal/enterprise apps
-- Development/testing  
-- Apps distributed outside the App Store (TestFlight, Ad-Hoc, Enterprise)
 
 ## ✨ Features
 
@@ -73,7 +66,7 @@ A robust, production-ready Flutter plugin for downloading videos and audio from 
 - 🏗️ **Clean Architecture** - SOLID principles with separation of concerns
 - 🔒 **Type-safe Communication** - Pigeon for compile-time type safety
 - 🧩 **Service Layer Pattern** - LibraryService, UpdateService, InfoService, DownloadService
-- 🧵 **Thread Safety** - Proper threading with coroutines (Android) and dispatch queues (iOS)
+- 🧵 **Thread Safety** - Proper threading with coroutines (Android)
 - 📝 **Well Documented** - Comprehensive API documentation
 - ✅ **Production Ready** - Battle-tested architecture
 
@@ -113,23 +106,6 @@ android {
 <application
     android:extractNativeLibs="true"
     ...>
-```
-
-### iOS Requirements
-
-**Minimum iOS version:**
-
-Update `ios/Podfile`:
-
-```ruby
-platform :ios, '13.0'
-```
-
-Install pods:
-
-```bash
-cd ios
-pod install
 ```
 
 ## 🚀 Quick Start
@@ -445,7 +421,6 @@ ExtractorPlugin (Main)
 - **Pigeon**: Type-safe communication between Dart and native code
 - **Streams**: Real-time progress updates via Dart streams
 - **Coroutines**: Async operations on Android
-- **Dispatch Queues**: Async operations on iOS
 
 ## 📊 Supported Platforms
 
@@ -492,23 +467,17 @@ android {
 - Try updating yt-dlp to the latest version
 - Some sites may require cookies or authentication
 
-### iOS
+## 💡 iOS Support
 
-**Pod Install Failed**
-```bash
-cd ios
-pod deintegrate
-pod install --repo-update
-```
+Currently, this plugin only supports Android. iOS implementation is open for contributions!
 
-**Build Error: Missing Python**
-- YoutubeDL-iOS includes Python runtime
-- Clean build folder and rebuild
+If you're interested in adding iOS support, here are some approaches to consider:
 
-**App Store Rejection**
-- iOS implementation is NOT AppStore-safe
-- Use only for internal/enterprise distribution
-- Consider server-side processing for App Store apps
+1. **Rust + FFI**: Use Rust with flutter_rust_bridge for cross-platform yt-dlp integration
+2. **Native Swift**: Port the Android implementation to Swift/Objective-C
+3. **Server-side**: Implement a backend service for video processing (recommended for App Store apps)
+
+Feel free to open an issue or pull request if you'd like to contribute iOS support!
 
 ## 📝 API Reference
 
@@ -689,7 +658,6 @@ This plugin uses open-source libraries including youtubedl-android (GPL-3.0). Se
 - **Scoped Storage**: Android 10+ compliant
 - **Permission Minimal**: Only requests necessary permissions
 - **Type-Safe**: Compile-time type checking with Pigeon
-- **Sandboxed**: iOS app sandbox compliant
 
 ## 📈 Version Information
 
@@ -699,7 +667,6 @@ This plugin uses open-source libraries including youtubedl-android (GPL-3.0). Se
 - **FFmpeg**: 6.0 (bundled)
 - **Python**: 3.8 (bundled)
 - **Minimum Android**: API 24 (Android 7.0)
-- **Minimum iOS**: 13.0
 
 ---
 

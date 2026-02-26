@@ -70,7 +70,6 @@ This is a complete rewrite of the plugin with production-ready architecture and 
 - **API Documentation**: Full API reference merged into README
 - **Example Documentation**: Detailed example app guide
 - **Contributing Guide**: Guidelines for contributors
-- **iOS Documentation**: iOS implementation details and limitations (experimental)
 
 ### 🐛 Fixed
 - Fixed version display to show actual yt-dlp version instead of hardcoded value
@@ -86,7 +85,7 @@ This is a complete rewrite of the plugin with production-ready architecture and 
 
 ### ⚠️ Platform Support
 - **Android**: ✅ Fully supported (API 24+)
-- **iOS**: ⚠️ Experimental (NOT AppStore-safe)
+- **iOS**: 💡 Open for contributions (see README for details)
 
 ### 📦 Dependencies
 - youtubedl-android: v0.18.1
